@@ -1,0 +1,141 @@
+# ============================================================================
+# TRAJECTORY PLUGIN CONFIGURATION
+# ============================================================================
+# This file controls all settings for the Trajectory plugin.
+# After editing, use /trajectory reload (requires permission trajectory.admin)
+# to apply changes without restarting the server.
+# All options are case‑sensitive unless otherwise noted.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# PARTICLE DENSITY
+# ----------------------------------------------------------------------------
+# Controls how densely particles are drawn along the predicted trajectory.
+# Smaller value = more particles (denser line) → better visibility but may
+# cause minor performance impact if set extremely low (e.g., < 0.1).
+# Larger value = fewer particles → less visual clutter, better performance.
+# Accepts decimal values (e.g., 0.3, 0.5, 1.0). Recommended: 0.3 – 1.0.
+particle-density: 0.5
+
+# ----------------------------------------------------------------------------
+# START DISTANCE (NEW!)
+# ----------------------------------------------------------------------------
+# Distance (in blocks) from the player's eye position where the trajectory
+# drawing begins. The particles are shifted forward along the view direction.
+# - A small value (e.g., 0.5) starts the line very close to your face,
+#   which can sometimes obscure your view.
+# - A larger value (e.g., 1.5) moves the start further away, giving you a
+#   clearer sight picture. The default 1.0 is a good balance.
+# This setting does NOT affect the physics simulation – it only moves the
+# visual start point.
+start-distance: 1.0
+
+# ----------------------------------------------------------------------------
+# SIMULATION TICKS (IMPORTANT!)
+# ----------------------------------------------------------------------------
+# Number of simulation steps (ticks) used to predict the projectile's path.
+# Each tick represents approximately 0.05 seconds of flight time (20 ticks = 1 second).
+# Higher values = longer prediction range (e.g., 150 ticks ≈ 7.5 seconds of flight).
+#
+# ⚠️ WARNING:
+#   - Setting this too high (e.g., 300+) can cause noticeable lag because
+#     the plugin performs collision checks and particle spawning for each tick.
+#   - The trajectory is calculated assuming the projectile is fired at MAXIMUM
+#     charge (fully drawn bow, charged trident, etc.). In real gameplay:
+#       * Partial charges result in shorter actual flight.
+#       * Random spread (especially crossbows with Multishot) may cause deviation.
+#       * Server lag or entity movement during flight can affect accuracy.
+#   Therefore, the predicted path is an ESTIMATE, NOT 100% ACCURATE.
+# Adjust this value based on your server's performance needs and desired range.
+simulation-ticks: 150
+
+# ----------------------------------------------------------------------------
+# HITBOX VISUALIZATION
+# ----------------------------------------------------------------------------
+# Whether to draw a coloured outline (hitbox) around an entity when the
+# trajectory predicts a hit.
+# true = enabled, false = disabled.
+enable-hitbox: true
+
+# ----------------------------------------------------------------------------
+# HITBOX PARTICLE TYPE
+# ----------------------------------------------------------------------------
+# The particle type used for drawing hitboxes (both entity outlines and
+# potion splash circles). Must be a valid Bukkit Particle enum name.
+# Common values: REDSTONE, FLAME, VILLAGER_HAPPY, SPELL_MOB, etc.
+# For REDSTONE, the colour is hardcoded as LIME (green) for hitboxes and
+# ORANGE for wall impacts (see code for details).
+hitbox-particle: REDSTONE
+
+# ----------------------------------------------------------------------------
+# ENTITY INFORMATION DISPLAY
+# ----------------------------------------------------------------------------
+# If true, displays the target's name and current health on the action bar
+# when the trajectory locks onto an entity. Requires enable-hitbox: true
+# to have any effect.
+show-entity-info: true
+
+# ----------------------------------------------------------------------------
+# GLOBAL PARTICLES
+# ----------------------------------------------------------------------------
+# If true, trajectory particles are visible to ALL players in the world,
+# not just the shooter. This can cause significant lag if many players
+# use trajectory at the same time.
+# false = only the shooter sees the particles (recommended).
+global-particles: false
+
+# ----------------------------------------------------------------------------
+# SOUND SETTINGS
+# ----------------------------------------------------------------------------
+# Sounds played when aiming at a new entity or when a real projectile hits.
+# Set to "false" (as a string) to disable a sound.
+# Must be valid Bukkit Sound enum names.
+
+# aim-sound: played when the trajectory prediction first locks onto a new entity.
+aim-sound: BLOCK_NOTE_BLOCK_PLING
+
+# hit-sound: played when an actual projectile (arrow, potion, etc.) hits an entity.
+# This event is caught via ProjectileHitEvent, so it works for all thrown items.
+hit-sound: ENTITY_ARROW_HIT_PLAYER
+
+# ----------------------------------------------------------------------------
+# PER‑WEAPON TRAIL PARTICLES
+# ----------------------------------------------------------------------------
+# Customise the particle trail for each weapon/item.
+# The value must be a valid Bukkit Particle enum name.
+# Note: For coloured particles like REDSTONE, the colour is currently hardcoded
+# to RED in the trajectory line (may become configurable in the future).
+# If an item is not listed, the plugin falls back to REDSTONE.
+
+trails:
+  # Particle for BOW trajectory
+  bow: REDSTONE
+  # Particle for CROSSBOW trajectory
+  crossbow: REDSTONE
+  # Particle for TRIDENT trajectory
+  trident: REDSTONE
+  # Particle for SNOWBALL trajectory
+  snowball: REDSTONE
+  # Particle for EGG trajectory
+  egg: REDSTONE
+  # Particle for ENDER_PEARL trajectory
+  ender_pearl: REDSTONE
+  # Particle for both SPLASH_POTION and LINGERING_POTION trajectories
+  potion: REDSTONE
+
+# ============================================================================
+# ADDITIONAL NOTES
+# ============================================================================
+# - The plugin only activates when holding a valid trajectory item:
+#   bow, crossbow, trident, snowball, egg, ender pearl, splash potion, lingering potion.
+# - Potion trajectories show a circle (radius 4 blocks) at the predicted impact
+#   point (entity or ground) to indicate the splash area.
+# - If a trajectory hits a solid block before reaching any entity, an orange
+#   marker (FLAME or coloured dust) appears at the impact point.
+# - The prediction is based on MAXIMUM charge/velocity (fully drawn bow, etc.).
+#   Partial charges will result in shorter actual flight than shown.
+# - Server lag, entity movement, or random spread (crossbow multishot) can cause
+#   deviations from the predicted path.
+# - Use /trajectory on/off to toggle the feature for yourself.
+# - Reload the config with /trajectory reload (requires trajectory.admin).
+# ============================================================================
